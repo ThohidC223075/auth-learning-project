@@ -1,38 +1,21 @@
-import { useEffect, useState } from "react";
-
-type Health = {
-  server: string;
-  database: string;
-  smtp: string;
-};
-
-const API_URL = import.meta.env.VITE_API_URL;
+import { Navigate, Route, Routes } from "react-router";
+import Signup from "./pages/Signup";
+import VerifyOtp from "./pages/VerifyOtp";
+import Signin from "./pages/Signin";
+import ForgotPassword from "./pages/ForgotPassword";
+import ResetPassword from "./pages/ResetPassword";
+import Home from "./pages/Home";
 
 export default function App() {
-  const [health, setHealth] = useState<Health | null>(null);
-  const [error, setError] = useState("");
-
-  useEffect(() => {
-    fetch(`${API_URL}/health`)
-      .then((res) => res.json())
-      .then((data: Health) => setHealth(data))
-      .catch(() => setError("Could not connect to backend"));
-  }, []);
-
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="bg-white p-8 rounded-lg shadow w-80">
-        <h1 className="text-xl font-bold mb-4">Connection Check</h1>
-        {error && <p className="text-red-600">{error}</p>}
-        {!health && !error && <p className="text-gray-500">Checking...</p>}
-        {health && (
-          <ul className="space-y-1">
-            <li>Server: {health.server}</li>
-            <li>Database: {health.database}</li>
-            <li>SMTP: {health.smtp}</li>
-          </ul>
-        )}
-      </div>
-    </div>
+    <Routes>
+      <Route path="/" element={<Home />} />
+      <Route path="/signup" element={<Signup />} />
+      <Route path="/verify-otp" element={<VerifyOtp />} />
+      <Route path="/signin" element={<Signin />} />
+      <Route path="/forgot-password" element={<ForgotPassword />} />
+      <Route path="/reset-password" element={<ResetPassword />} />
+      <Route path="*" element={<Navigate to="/" replace />} />
+    </Routes>
   );
 }
