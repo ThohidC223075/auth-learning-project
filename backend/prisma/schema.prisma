@@ -1,0 +1,41 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  password  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum OtpPurpose {
+  SIGNUP
+  RESET_PASSWORD
+}
+
+model Otp {
+  id           String     @id @default(uuid())
+  email        String
+  codeHash     String
+  purpose      OtpPurpose
+  passwordHash String?
+  verified     Boolean    @default(false)
+  expiresAt    DateTime
+  createdAt    DateTime   @default(now())
+
+  @@index([email, purpose])
+}
+
+model OtpRateLimit {
+  ip           String    @id
+  requestCount Int       @default(0)
+  blockedUntil DateTime?
+  updatedAt    DateTime  @updatedAt
+}
